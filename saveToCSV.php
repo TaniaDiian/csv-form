@@ -6,37 +6,37 @@ $errors = [];
 $success = false;
 $requireKeys = ['name', 'email', 'comment'];
 
+const FILE_NAME = "data.csv";
+
 try {
 
     foreach ($requireKeys as $key) {
-        if (!isset($_POST[$key]) || strlen($_POST[$key]) === 0) {
+        if (empty($_POST[$key])) {
             array_push($errors, "Field $key is empty");
+        }else{
+            $formData[$key] = $_POST[$key];
         }
     }
 
     if (empty($errors)) {
-        $formData = [
-            'name'  => $_POST["name"],
-            'email'  => $_POST["email"],
-            'comment' => $_POST["comment"]
-        ];
-
-        $fileOpen = fopen("data.csv", "a");
+        $fileOpen = fopen(FILE_NAME, "a");
 
         if (fputcsv($fileOpen, $formData, ';')) {
             $success = true;
-        }
-
-        fclose($fileOpen);
+        } 
     }
 } catch (Exception $e) {
 
     array_push($errors, $e->getMessage());
-} finally {
-    $result = [
-        'errors' => $errors,
-        'success' => $success
-    ];
-
-    echo json_encode($result);
 }
+finally{
+
+    if($fileOpen){
+        fclose($fileOpen);
+    }
+}
+
+echo json_encode([
+    'errors' => $errors,
+    'success' => $success
+]);
