@@ -1,8 +1,3 @@
-<?php
-
-include 'saveToCSV.php';
-
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,17 +41,19 @@ include 'saveToCSV.php';
     $(function(){
        $('input[type="submit"]').on('click', function(e){
            e.preventDefault();
-           let thisSubmission   =   $(this).attr('name');
            $data = $('#ldap-form').serialize();
-                $.ajax({
-                    type: "post",
-                    url: $('#ldap-form').attr('action'),
-                    data: $data,
-                    cache: false,
-                    success: function(html){
-                        console.log($data);
-                    }
-                });
+            $.ajax({
+                type: "post",
+                url:  "/saveToCSV.php",
+                data: $data,
+                cache: false,
+                success: function(data) {
+                    console.log('data', data);
+                },
+                error: function (error, xml) {
+                    console.log('error', error);
+                }
+            });
        });
     });
 </script>
